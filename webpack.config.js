@@ -1,23 +1,24 @@
 const path = require('path');
-const HtmlWebPackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const autoprefixer = require('autoprefixer');
 const webpack = require('webpack');
 
 module.exports = {
 	entry: './src/frontend/index.js',
+	mode: 'development',
 	output: {
-		path: path.resolve(__dirname, 'dist'),
-		filename: 'bundle.js',
+		path: '/',
+		filename: 'assets/app.js',
+		publicPath: '/'
 	},
 	resolve: {
 		extensions: ['.js', '.jsx']
 	},
-	optimizations: {
+	optimization: {
 		splitChunks: {
 			chunks: 'async',
 			name: true,
-			cacheGroup: {
+			cacheGroups: {
 				vendors: {
 					name: 'vendors',
 					chunks: 'all',
@@ -27,7 +28,7 @@ module.exports = {
 					enforce: true,
 					test(module, chunks) {
 						const name = module.nameForCondition && module.nameForCondition();
-						return chunks.some(chunk => chunk.name !== 'vendor' && /[\\/]node_modules[\\/]/.test(name))
+						return chunks.some(chunks => chunks.name !== 'vendor' && /[\\/]node_modules[\\/]/.test(name))
 					}
 				}
 			}
@@ -51,22 +52,23 @@ module.exports = {
 				} 
 			},
 			{
-				test: /\.html$/,
-				use: [
-					{
-						loader: 'html-loader'
-					}
-				]
-			},
-			{
 				test: /\.(s*)css$/,
 				use: [
 					{
 						loader: MiniCssExtractPlugin.loader,
 					},
 					'css-loader',
+					'postcss-loader',
 					'sass-loader',
-					'postcss-loader'
+					{
+						loader: 'sass-loader',
+						options: {
+							data: `
+								@import "${path.resolve(__dirname, 'src/frontend/assets/styles/Vars.scss')}";
+								@import "${path.resolve(__dirname, "")}";
+							`,
+						}
+					}
 				]
 			},
 			{
@@ -92,12 +94,8 @@ module.exports = {
 				]
 			}
 		}),
-		new HtmlWebPackPlugin({
-			template: './public/index.html',
-			filename: './index.html'
-		}),
 		new MiniCssExtractPlugin({
-			filename: 'assets/[name].css'
+			filename: 'assets/app.css'
 		})
 	]
 }

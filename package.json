@@ -36,7 +36,9 @@
     "react-hot-loader": "4.12.7",
     "react-redux": "^7.1.1",
     "react-router-dom": "^5.0.1",
-    "redux": "^4.0.4"
+    "redux": "^4.0.4",
+    "webpack-dev-middleware": "^3.7.1",
+    "webpack-hot-middleware": "^2.25.0"
   },
   "devDependencies": {
     "@babel/core": "^7.6.0",
