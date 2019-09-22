@@ -2,6 +2,7 @@ const path = require('path');
 const HtmlWebPackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const autoprefixer = require('autoprefixer');
+const webpack = require('webpack');
 
 module.exports = {
 	entry: './src/frontend/index.js',
@@ -12,16 +13,36 @@ module.exports = {
 	resolve: {
 		extensions: ['.js', '.jsx']
 	},
+	optimizations: {
+		splitChunks: {
+			chunks: 'async',
+			name: true,
+			cacheGroup: {
+				vendors: {
+					name: 'vendors',
+					chunks: 'all',
+					reuseExistingChunk: true,
+					priority: 1,
+					filename: 'assets/vendor.js',
+					enforce: true,
+					test(module, chunks) {
+						const name = module.nameForCondition && module.nameForCondition();
+						return chunks.some(chunk => chunk.name !== 'vendor' && /[\\/]node_modules[\\/]/.test(name))
+					}
+				}
+			}
+		}
+	},
 	module: {
 		rules: [
-			{
-				test: /\.(js|jsx)$/,
-				exclude: /node_modules/,
-				enforce: 'pre',
-				use: {
-					loader: 'eslint-loader',
-				},
-			},
+			// {
+			// 	test: /\.(js|jsx)$/,
+			// 	exclude: /node_modules/,
+			// 	enforce: 'pre',
+			// 	use: {
+			// 		loader: 'eslint-loader',
+			// 	},
+			// },
 			{
 				test: /\.(js|jsx)$/,
 				exclude: /node_modules/,
@@ -63,7 +84,8 @@ module.exports = {
 		historyApiFallback: true
 	},
 	plugins: [
-		new HtmlWebPackPlugin.LoaderOptionsPlugin({
+		new webpack.HotModuleReplacementPlugin(),
+		new webpack.LoaderOptionsPlugin({
 			options: {
 				postcss: [
 					autoprefixer()
