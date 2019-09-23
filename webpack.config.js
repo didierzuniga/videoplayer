@@ -2,19 +2,32 @@ const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const autoprefixer = require('autoprefixer');
 const webpack = require('webpack');
+const dotenv = require('dotenv');
+const TerserPlugin = require('terser-webpack-plugin');
+const CompressionPlugin = require('compression-webpack-plugin');
+const ManifestPlugin = require('webpack-manifest-plugin');
+
+dotenv.config();
+const isProd = (process.env.NODE_ENV === 'production');
 
 module.exports = {
+	devtool: isProd	? 'hidden-source-map' : 'cheap-source-map',
 	entry: './src/frontend/index.js',
-	mode: 'development',
+	mode: process.env.NODE_ENV,
 	output: {
-		path: '/',
-		filename: 'assets/app.js',
+		path: isProd
+						? path.join(process.cwd(), './src/server/public')
+						: '/',
+		filename: isProd ? 'assets/app-[hash].js' : 'assets/app.js',
 		publicPath: '/'
 	},
 	resolve: {
 		extensions: ['.js', '.jsx']
 	},
 	optimization: {
+		minimizer: isProd
+								? [new TerserPlugin()]
+								: [],
 		splitChunks: {
 			chunks: 'async',
 			name: true,
@@ -24,7 +37,7 @@ module.exports = {
 					chunks: 'all',
 					reuseExistingChunk: true,
 					priority: 1,
-					filename: 'assets/vendor.js',
+					filename: isProd ? 'assets/vendor-[hash].js' : 'assets/vendor.js',
 					enforce: true,
 					test(module, chunks) {
 						const name = module.nameForCondition && module.nameForCondition();
@@ -60,15 +73,15 @@ module.exports = {
 					'css-loader',
 					'postcss-loader',
 					'sass-loader',
-					{
-						loader: 'sass-loader',
-						options: {
-							data: `
-								@import "${path.resolve(__dirname, 'src/frontend/assets/styles/Vars.scss')}";
-								@import "${path.resolve(__dirname, "")}";
-							`,
-						}
-					}
+					// {
+					// 	loader: 'sass-loader',
+					// 	options: {
+					// 		data: `
+					// 			@import "${path.resolve(__dirname, 'src/frontend/assets/styles/Vars.scss')}";
+					// 			@import "${path.resolve(__dirname, "")}";
+					// 		`,
+					// 	}
+					// }
 				]
 			},
 			{
@@ -95,7 +108,14 @@ module.exports = {
 			}
 		}),
 		new MiniCssExtractPlugin({
-			filename: 'assets/app.css'
-		})
+			filename: isProd ? 'assets/app-[hash].css' : 'assets/app.css',
+		}),
+		isProd
+			? new CompressionPlugin({
+				test: /\.js$|\.css$/,
+				filename: '[path].gz'
+			})
+			: false,
+		isProd ? new ManifestPlugin() : false
 	]
 }

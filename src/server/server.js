@@ -1,6 +1,8 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import webpack from 'webpack';
+import main from './routes/main';
+import helmet from 'helmet';
 
 dotenv.config();
 
@@ -8,9 +10,10 @@ const ENV = process.env.NODE_ENV;
 const PORT = process.env.PORT || 3000;
 
 const app = express();
+app.use(express.static(`${__dirname}/public`));
 
 if (ENV === 'development') {
-  console.log('Loading dev config...');
+  console.log('Loading development config...');
   const webpackConfig = require('../../webpack.config');
   const webpackDevMiddleware = require('webpack-dev-middleware');
   const webpackHotMiddleware = require('webpack-hot-middleware');
@@ -25,27 +28,14 @@ if (ENV === 'development') {
   };
   app.use(webpackDevMiddleware(compiler, serverConfig));
   app.use(webpackHotMiddleware(compiler));
+} else {
+  console.log(`Loading production config`);
+  app.use(helmet());
+  app.use(helmet.permittedCrossDomainPolicies());
+  app.disable('x-powered-by');
 }
 
-app.get('*', (req, res) => {
-  res.send(`
-    <!DOCTYPE html>
-    <html lang="en">
-      <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title>Video Player</title>
-        <link rel="stylesheet" href="assets/app.css" type="text/css" />
-      </head>
-      <body>
-        <div id="app"></div>
-        <script src="assets/app.js" type="text/javascript"></script>
-        <script src="assets/vendor.js" type="text/javascript"></script>
-      </body>
-    </html>
-  `);
-})
+app.get('*', main)
 
 app.listen(PORT, (err) => {
   if (err) console.log(err);
