@@ -1,18 +1,18 @@
-import React, { useEffect } from 'react';
-import { connect } from 'react-redux';
-import { getVideoSource } from '../actions';
-import NotFound from '../containers/NotFound';
-import '../assets/styles/components/Player.scss';
+import React, { useEffect } from 'react'
+import { connect } from 'react-redux'
+import { getVideoSource } from '../actions'
+import NotFound from '../containers/NotFound'
+import '../assets/styles/components/Player.scss'
 
 const Player = props => {
 
-  const { id } = props.match.params;
+  const { id } = props.match.params
 
-  const hasPlaying = Object.keys(props.playing).length > 0;
+  const hasPlaying = Object.keys(props.playing).length > 0
 
   useEffect(() => {
     props.getVideoSource(id)
-  }, []);
+  }, [])
 
   return hasPlaying ? (
     <div className="player">
@@ -38,4 +38,4 @@ const mapDispatchToProps = {
   getVideoSource
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Player);
+export default connect(mapStateToProps, mapDispatchToProps)(Player)

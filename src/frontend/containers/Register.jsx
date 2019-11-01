@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { connect } from 'react-redux';
-import { registerRequest } from '../actions';
-import { Link } from 'react-router-dom';
-import '../assets/styles/components/Register.scss';
+import React, { useState } from 'react'
+import { connect } from 'react-redux'
+import { registerUser } from '../actions'
+import { Link } from 'react-router-dom'
+import '../assets/styles/components/Register.scss'
 
 const Register = props => {
 
@@ -10,11 +10,11 @@ const Register = props => {
     email: '',
     name: '',
     password: ''
-  });
+  })
 
   const validateEmail = email => {
     const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(email);
+    return re.test(email)
   }
 
   const handleInput = event => {
@@ -32,9 +32,8 @@ const Register = props => {
   }
 
   const handleSubmit = event => {
-    event.preventDefault();
-    props.registerRequest(form);
-    props.history.push('/');
+    event.preventDefault()
+    props.registerUser(form, '/login')
   }
 
   return (
@@ -48,6 +47,7 @@ const Register = props => {
             type="text"
             placeholder="Nombre"
             onChange={handleInput}
+            required
           />
           <input
             name="email"
@@ -55,6 +55,7 @@ const Register = props => {
             type="text"
             placeholder="Correo"
             onChange={handleInput}
+            required
           />
           <input
             name="password"
@@ -62,8 +63,9 @@ const Register = props => {
             type="password"
             placeholder="Contraseña"
             onChange={handleInput}
+            required
           />
-          <button className="button">Registrarme</button>
+          <button className="button" type="submit">Registrarme</button>
         </form>
         <Link to="/login">
           Iniciar sesión
@@ -74,7 +76,7 @@ const Register = props => {
 }
 
 const mapDispatchToProps = {
-  registerRequest
+  registerUser
 }
 
-export default connect(null, mapDispatchToProps)(Register);
+export default connect(null, mapDispatchToProps)(Register)

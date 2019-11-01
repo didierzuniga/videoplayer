@@ -1,19 +1,20 @@
-import getManifest from '../getManifest';
-const dotenv = require('dotenv');
+import getManifest from '../getManifest'
 
-dotenv.config();
-const isProd = (process.env.NODE_ENV === 'production');
-let srcs = {
-  mainCss: 'assets/app.css',
-  mainJs: 'assets/app.js',
-  vendorsJs: 'assets/vendor.js'
-}
-if (isProd) {
-  const files = getManifest();
-  srcs.mainCss = files['main.css']
-  srcs.mainJs = files['main.js']
-  srcs.vendorsJs = files['vendors.js']
-}
+let files = false;
+if (process.env.NODE_ENV !== 'development') files = getManifest()
+
+// const isProd = (!config.dev)
+// let srcs = {
+//   mainCss: 'assets/app.css',
+//   mainJs: 'assets/app.js',
+//   vendorsJs: 'assets/vendor.js'
+// }
+// if (isProd) {
+//   const files = getManifest()
+//   srcs.mainCss = files['main.css']
+//   srcs.mainJs = files['main.js']
+//   srcs.vendorsJs = files['vendors.js']
+// }
 
 const render = (html, preloadedState) => {
   return (`
@@ -24,7 +25,7 @@ const render = (html, preloadedState) => {
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <title>Video Player</title>
-        <link rel="stylesheet" href="${srcs.mainCss}" type="text/css" />
+        <link rel="stylesheet" href="${files ? files['main.css'] : 'assets/app.css'}" type="text/css" />
       </head>
       <body>
         <div id="app">${html}</div>
@@ -36,11 +37,11 @@ const render = (html, preloadedState) => {
             '\\u003c'
           )}
         </script>
-        <script src="${srcs.mainJs}" type="text/javascript"></script>
-        <script src="${srcs.vendorsJs}" type="text/javascript"></script>
+        <script src="${files ? files['main.js'] : 'assets/app.js'}" type="text/javascript"></script>
+        <script src="${files ? files['vendors.js'] : 'assets/vendor.js'}" type="text/javascript"></script>
       </body>
     </html>
-  `);
+  `)
 }
 
-export default render;
+export default render
