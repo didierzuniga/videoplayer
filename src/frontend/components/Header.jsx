@@ -22,8 +22,8 @@ const Header = props => {
 
   return(
     <header className="header">
-      <Link to='/'>
-        <p className="header__logo">VideoPlayer</p>
+      <Link to='/' style={{ textDecoration: 'none' }}>
+        <p className="header__logo">Waupp</p>
       </Link>
 
       <div className="header__menu">

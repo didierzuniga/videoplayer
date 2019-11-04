@@ -2,7 +2,7 @@
 
 .header {
   align-items: center;
-  background: #8f57fd;
+  background: #21c08b;
   color: white;
   display: flex;
   height: 100px;
@@ -11,10 +11,15 @@
   width: 100%;
 }
 
+.isLogin, .isRegister {
+  background-color: #21c08b;
+}
+
 .header__logo {
   margin-left: 30px;
-  font-size: 28px;
+  font-size: 32px;
   font-family: $logo-font;
+  color: white;
 }
 
 .header__menu {
