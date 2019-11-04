@@ -33,7 +33,7 @@ if (ENV === 'development') {
   const webpackHotMiddleware = require('webpack-hot-middleware')
   const compiler = webpack(webpackConfig)
   const serverConfig = {
-    contentBase: `http://localhost${PORT}`,
+    contentBase: `http://localhost:${PORT}`,
     port: PORT,
     publicPath: webpackConfig.output.publicPath,
     hot: true,
