@@ -62,11 +62,11 @@ app.post(
             next(error)
           }
           const { token, ...user } = data
-
+          res.clearCookie('token')
           res.cookie('token', token, {
             httpOnly: !(ENV === 'development'),
             secure: !(ENV === 'development'),
-            domain: 'waupp.com'
+            domain: 'https://waupp.com'
           })
 
           res.status(200).json(user.user)
