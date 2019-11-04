@@ -18,7 +18,7 @@ const app = express()
 // Body parser
 app.use(express.json())
 app.use(cookieParser())
-// app.use(express.static(`${__dirname}/public`))
+app.use(express.static(`${__dirname}/public`))
 
 // Basic strategy
 require('./utils/auth/strategies/basic')
